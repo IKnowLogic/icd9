@@ -1,6 +1,10 @@
 # Python library for ICD9 Codes
 
-The library encodes [ICD9
+This is an updated version of Sirrice ICD9 codes repository.
+This version includes all, and not only a subset of codes from the ICD9.
+The library is still as easy as ever to use, as I have left most functionality as was.
+
+The library encodes [ICD-9CM
 codes](https://en.wikipedia.org/wiki/International_Statistical_Classification_of_Diseases_and_Related_Health_Problems#ICD-9)
 in their natural hierarchy.  For example, "Cholera due to vibrio cholerae" has
 the ICD9 code `001.0`, and is categorized as a type of Cholera, which in turn
@@ -138,22 +142,7 @@ and their short and long descriptions.
 
 ## Scraper
 
-The `scraper/` directory includes the scraper code used to generate the
-dataset.  `scraper/scraper.py` creates a json file `codes.json` of each ICD9
-code's parent codes and descriptions:
-
-```python
-[
-  {'code': None},
-  {'code': '001-139', 'descr': 'Infectious and Parasitic Diseases'},
-  {'code': '001-009', 'descr': 'Intestinal Infectious Diseases'},
-  {'code': '001', 'descr': 'Cholera'},
-  {'code':  '001.0', 'descr': 'Cholera due to vibrio cholerae'}
-]
-```
-
-The last element is the actual code, the preceeding elements are coarser
-groupings of codes.  The first element is a dummy that represents root.
-
-Thanks to [http://icd9cm.chrisendres.com/](http://icd9cm.chrisendres.com),
-where the data was secretly scraped from.
+I completed the hierarchy by scraping data from several sites, among others:
+- [icd9data](http://www.icd9data.com)
+- [chrisendres](http://icd9cm.chrisendres.com/)
+- [icd.codes](https://icd.codes/icd9cm)

@@ -49,7 +49,6 @@ class Node(object):
     ret.reverse()
     return ret
 
-
   @property
   def leaves(self):
     leaves = set()
