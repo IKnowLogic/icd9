@@ -21,11 +21,52 @@ class Node(object):
       ret.extend(child.search(code))
     return ret
 
+  def is_leaf(self):
+    if self.children:
+      return False
+    else:
+      return True
+
   def find(self, code):
+    if "V" not in code and "E" not in code and "-" not in code:
+      return self.fast_find(code)
     nodes = self.search(code)
     if nodes:
       return nodes[0]
     return None
+
+  def fast_find(self, code):
+    node = self
+    oldNode = None
+    while node.code != code:
+      if node == oldNode:
+        return None
+      else:
+        oldNode = None
+
+      children = node.children
+      if not children:
+        return None
+
+      # Cut away E and V hierarchies
+      if node.depth in [-1]:
+        children.sort(key=lambda tup: tup.code)
+        children = children[:-2]
+
+      for child in children:
+        if node.depth in [-1, 0]:
+          leftRange, rightRange = map(int, child.code.split("-"))
+          if leftRange <= int(float(code)) <= rightRange:
+            node = child
+            break
+        else:
+          if child.code in code:
+            node = child
+            break
+    return node
+
+  def get_parents(self):
+    return self.parents
 
   @property
   def root(self):
@@ -58,9 +99,24 @@ class Node(object):
       leaves.update(child.leaves)
     return list(leaves)
 
+  @property
+  def all_nodes(self):
+    nodes = set()
+    backlock = self.children.copy()
+    while backlock:
+      node = backlock.pop()
+      nodes.add(node)
+      backlock.extend(node.children.copy())
+
+    return list(nodes)
+
   # return all leaf notes with a depth of @depth
   def leaves_at_depth(self, depth):
     return filter(lambda n: n.depth == depth, self.leaves)
+
+  # return all nodes with a depth of @depth
+  def nodes_at_depth(self, depth):
+    return filter(lambda n: n.depth == depth, self.all_nodes)
 
   @property
   def siblings(self):
@@ -82,7 +138,7 @@ class ICD9(Node):
     self.depth2nodes = defaultdict(dict)
     super(ICD9, self).__init__(-1, 'ROOT')
 
-    with file(codesfname, 'r') as f:
+    with open(codesfname, 'r') as f:
       allcodes = json.loads(f.read())
       self.process(allcodes)
 
